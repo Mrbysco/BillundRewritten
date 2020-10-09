@@ -1,0 +1,24 @@
+{
+    "_comment": "Misc",
+    "itemGroup.billund.tab": "Billund",
+
+    "billund.brick.illuminated": "发光的",
+    "billund.brick.transparent": "透明的",
+    "billund.brick.smooth": "光滑的",
+
+    "billund.gui.header": "乐高积木订单",
+    "billund.gui.order.place": "订购",
+    "billund.gui.order.placed": "已订购",
+
+    "_comment": "Pack",
+    "pack.starter": "初学者礼包",
+    "pack.colorA": "彩色积木礼包 A",
+    "pack.colorB": "彩色积木礼包 B",
+    "pack.colorC": "彩色积木礼包 C",
+    "pack.colorD": "彩色积木礼包 D",
+    "pack.random": "随机礼包",
+
+    "_comment": "Item",
+    "item.brick": "积木",
+    "item.order_form": "乐高积木订单"
+}

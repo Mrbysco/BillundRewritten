@@ -1,0 +1,15 @@
+modLoader="javafml"
+loaderVersion="[34,)"
+issueTrackerURL="https://github.com/Mrbysco/Billund"
+license="MIT"
+
+[[mods]]
+modId="billund"
+version="${file.jarVersion}"
+displayName="Billund"
+displayURL="http://www.computercraft.info/billund"
+authors="Daniel Ratcliffe"
+credits="Created by Daniel \"dan200\" Ratcliffe"
+description='''
+Plastic building blocks for Minecraft!
+'''

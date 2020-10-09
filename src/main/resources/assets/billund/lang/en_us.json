@@ -1,0 +1,24 @@
+{
+    "_comment": "Misc",
+    "itemGroup.billund.tab": "Billund",
+
+    "billund.brick.illuminated": "Illuminated",
+    "billund.brick.transparent": "Transparent",
+    "billund.brick.smooth": "Smooth",
+
+    "billund.gui.header": "Billund Order Form",
+    "billund.gui.order.place": "Place Order",
+    "billund.gui.order.placed": "Placed",
+
+    "_comment": "Pack",
+    "billund.pack.starter": "Starter Pack",
+    "billund.pack.colorA": "Color Pack A",
+    "billund.pack.colorB": "Color Pack B",
+    "billund.pack.colorC": "Color Pack C",
+    "billund.pack.colorD": "Color Pack D",
+    "billund.pack.random": "Blind Bag",
+
+    "_comment": "Item",
+    "item.billund.brick": "Brick",
+    "item.billund.order_form": "Order Form"
+}
