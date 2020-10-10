@@ -3,9 +3,9 @@ package dan200.billund.shared.item;
 
 import dan200.billund.Billund;
 import dan200.billund.client.BillundISTERProvider;
-import dan200.billund.shared.registry.BillundTabs;
 import dan200.billund.shared.data.Brick;
 import dan200.billund.shared.data.Stud;
+import dan200.billund.shared.registry.BillundTabs;
 import dan200.billund.shared.util.StudHelper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;

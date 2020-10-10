@@ -22,6 +22,7 @@ eclipse
 run
 OLD
 logs
+*.bbmodel
 
 # Files from Forge MDK
 forge*changelog.txt

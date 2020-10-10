@@ -4,6 +4,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import dan200.billund.Billund;
 import dan200.billund.shared.data.BillundSet;
+import dan200.billund.shared.network.PacketHandler;
+import dan200.billund.shared.network.message.OrderMessage;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
@@ -187,19 +189,15 @@ public class OrderFormScreen extends Screen {
 
     private void order() {
         if (!ordered) {
-            List<String> ordersList = new ArrayList<>();
             // Send our orders to the server
-            for (BillundSet order : orders)
-                if (order != null)
-                    ordersList.add(order.getSetName());
-
-//            MessageBillundOrder packet = new MessageBillundOrder(ordersList.toArray(new String[ordersList.size()])); TODO: Packet here
-//            MessageHandler.INSTANCE.sendToServer(packet);
-
-            Billund.LOGGER.info("Clicked Order");
+            for (BillundSet order : orders) {
+                OrderMessage message = new OrderMessage(order.getSetName());
+                PacketHandler.CHANNEL.sendToServer(message);
+            }
 
             // Ensure we don't order again
-//            ordered = true; TODO: RE-enable this to make sure we don't order again
+            ordered = true;
+            closeScreen();
         }
     }
 

@@ -2,10 +2,13 @@ package dan200.billund.shared.registry;
 
 import dan200.billund.Billund;
 import dan200.billund.shared.block.BillundBlock;
+import dan200.billund.shared.entity.AirDropEntity;
 import dan200.billund.shared.item.BrickItem;
 import dan200.billund.shared.item.OrderFormItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
@@ -169,4 +172,13 @@ public class BillundRegistry {
 
     public static final RegistryObject<Block> BILLUND = BLOCKS.register("billund", () -> new BillundBlock(Block.Properties.create(Material.WOOD)));
 
+    public static final RegistryObject<EntityType<AirDropEntity>> AIR_DROP = ENTITIES.register("air_drop", () -> register("air_drop", EntityType.Builder.<AirDropEntity>create(AirDropEntity::new, EntityClassification.MISC).size(0.98f, 0.98f)));
+
+    public static <T extends Entity> EntityType<T> register(String id, EntityType.Builder<T> builder, boolean sendVelocityUpdates) {
+        return builder.setTrackingRange(80).setUpdateInterval(3).setShouldReceiveVelocityUpdates(sendVelocityUpdates).build(id);
+    }
+
+    public static <T extends Entity> EntityType<T> register(String id, EntityType.Builder<T> builder) {
+        return register(id, builder, true);
+    }
 }

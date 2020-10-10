@@ -50,7 +50,9 @@ public class BillundSet {
     public ArrayList<ItemStack> getBrickList() {
         if(getSetName().equalsIgnoreCase("BlindBag")) {
             ArrayList bricks = new ArrayList();
-            addRandom(bricks);
+            for (int i=0; i<27; i++) {
+                addRandom(bricks);
+            }
             return bricks;
         } else {
             return brickList;

@@ -1,8 +1,8 @@
 package dan200.billund.shared.block;
 
-import dan200.billund.shared.registry.BrickHelper;
 import dan200.billund.shared.data.Brick;
 import dan200.billund.shared.item.BrickItem;
+import dan200.billund.shared.registry.BrickHelper;
 import dan200.billund.shared.tile.BillundTileEntity;
 import dan200.billund.shared.util.StudHelper;
 import net.minecraft.block.Block;

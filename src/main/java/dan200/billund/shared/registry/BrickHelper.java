@@ -23,7 +23,7 @@ public class BrickHelper {
             }
         }
 
-        return ItemStack.EMPTY;
+        return createBrickStack(illuminated, transparent, smooth, color, width, depth + 1, quantity);
     }
 
     public static ItemStack createBrickStack(boolean illuminated, boolean transparent, boolean smooth, int color, int width, int depth, int quantity) {

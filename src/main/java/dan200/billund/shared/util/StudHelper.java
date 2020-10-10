@@ -1,8 +1,8 @@
 package dan200.billund.shared.util;
 
-import dan200.billund.shared.registry.BillundRegistry;
 import dan200.billund.shared.data.Brick;
 import dan200.billund.shared.data.Stud;
+import dan200.billund.shared.registry.BillundRegistry;
 import dan200.billund.shared.tile.BillundTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
