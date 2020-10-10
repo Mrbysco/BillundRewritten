@@ -33,6 +33,7 @@ public class ItemBrickRenderer extends ItemStackTileEntityRenderer {
     public void func_239207_a_(ItemStack stack, TransformType type, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
 
         matrixStack.push();
+
         switch (type) {
             case THIRD_PERSON_LEFT_HAND:
             case THIRD_PERSON_RIGHT_HAND:{
@@ -45,9 +46,12 @@ public class ItemBrickRenderer extends ItemStackTileEntityRenderer {
                 break;
             }
             case GUI: {
+//                RenderSystem.rotatef(30F, 1.0F, 0.0F, 0.0F);
+//                RenderSystem.rotatef(225, 0.0F, 1.0F, 0.0F);
                 matrixStack.rotate(Vector3f.XP.rotationDegrees(30));
                 matrixStack.rotate(Vector3f.YP.rotationDegrees(225));
                 matrixStack.scale(0.625f, 0.625f, 0.625f);
+//                RenderSystem.scalef(0.625f, 0.625f, 0.625f);
                 BrickRenderHelper.renderBrick(stack, matrixStack, buffer.getBuffer(renderType), true, true);
                 break;
             }
@@ -57,6 +61,7 @@ public class ItemBrickRenderer extends ItemStackTileEntityRenderer {
                 break;
             }
         }
+
         matrixStack.pop();
     }
 }

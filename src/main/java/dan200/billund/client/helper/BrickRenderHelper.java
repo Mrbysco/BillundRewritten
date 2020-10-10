@@ -27,6 +27,7 @@ public class BrickRenderHelper {
         int color = item.getColorValue();
         int width = item.getWidth();
         int height = BrickItem.getHeight(brick);
+        boolean illuminated = BrickItem.getIlluminated(brick);
         int depth = item.getDepth();
 
         // Setup
@@ -52,7 +53,7 @@ public class BrickRenderHelper {
         int b = color & 255;
         bufferBuilder.setDefaultColor(r, g, b, 255);
 
-        renderBrick(bufferBuilder, null, brightness, false, smooth, 0, 0, 0, width, height, depth);
+        renderBrick(bufferBuilder, null, brightness, illuminated, smooth, 0, 0, 0, width, height, depth);
 
         matrixStack.pop();
     }
