@@ -6,7 +6,7 @@ import dan200.billund.client.BillundISTERProvider;
 import dan200.billund.shared.core.BillundTabs;
 import dan200.billund.shared.data.Brick;
 import dan200.billund.shared.data.Stud;
-import dan200.billund.shared.tile.BillundTileEntity;
+import dan200.billund.shared.util.StudHelper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -53,7 +53,7 @@ public class BrickItem extends Item {
         return color.getColorValue();
     }
 
-    public static BillundTileEntity.StudRaycastResult raycastFromPlayer(World world, PlayerEntity player, float f) {
+    public static StudHelper.StudRaycastResult raycastFromPlayer(World world, PlayerEntity player, float f) {
         // Calculate the raycast origin and direction
         double yOffset2 = (!world.isRemote && player.isSneaking()) ? -0.08 : 0.0; // TODO: Improve
         float pitch = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
@@ -77,15 +77,15 @@ public class BrickItem extends Item {
         Vector3d direction = new Vector3d((double) f7, (double) f6, (double) f8);
 
         // Do the raycast
-        return BillundTileEntity.raycastStuds(world, position, direction, distance);
+        return StudHelper.raycastStuds(world, position, direction, distance);
     }
 
     public static Brick getPotentialBrick(ItemStack stack, World world, PlayerEntity player, float f) {
         // Do the raycast
-        BillundTileEntity.StudRaycastResult result = raycastFromPlayer(world, player, f);
+        StudHelper.StudRaycastResult result = raycastFromPlayer(world, player, f);
         if (result != null) {
             // Bricks can't be directly placed on top of smooth bricks (because I'm evil)
-            Stud stud = BillundTileEntity.getStud(world, result.hitX, result.hitY, result.hitZ);
+            Stud stud = StudHelper.getStud(world, result.hitX, result.hitY, result.hitZ);
             if (result.hitSide == 1 && stud.smooth) {
                 return null;
             }
@@ -154,7 +154,7 @@ public class BrickItem extends Item {
                         brick.xOrigin = placeX - x;
                         brick.yOrigin = placeY - y;
                         brick.zOrigin = placeZ - z;
-                        if (BillundTileEntity.canAddBrick(world, brick)) {
+                        if (StudHelper.canAddBrick(world, brick)) {
                             return brick;
                         }
                     }
@@ -166,9 +166,9 @@ public class BrickItem extends Item {
 
     public static Brick getExistingBrick(World world, PlayerEntity player, float f) {
         // Do the raycast
-        BillundTileEntity.StudRaycastResult result = raycastFromPlayer(world, player, f);
+        StudHelper.StudRaycastResult result = raycastFromPlayer(world, player, f);
         if (result != null) {
-            Stud stud = BillundTileEntity.getStud(world, result.hitX, result.hitY, result.hitZ);
+            Stud stud = StudHelper.getStud(world, result.hitX, result.hitY, result.hitZ);
             if (stud != null && stud.actuallyExists) {
                 return new Brick(stud.illuminated, stud.transparent, stud.smooth, stud.color, stud.xOrigin, stud.yOrigin, stud.zOrigin, stud.brickWidth, stud.brickHeight, stud.brickDepth);
             }
@@ -201,16 +201,16 @@ public class BrickItem extends Item {
         if (brick != null) {
             if (!worldIn.isRemote) {
                 // Place the brick
-                BillundTileEntity.addBrick(worldIn, brick);
+                StudHelper.addBrick(worldIn, brick);
 
                 if (!playerIn.abilities.isCreativeMode) {
                     // Decrement stackSize
                     stack.shrink(1);
+                    return ActionResult.resultSuccess(stack);
                 }
             }
         }
-
-        return super.onItemRightClick(worldIn, playerIn, handIn);
+        return ActionResult.resultPass(stack);
     }
 
     public static int getHeight(ItemStack stack) {

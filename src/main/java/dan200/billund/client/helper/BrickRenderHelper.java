@@ -7,9 +7,9 @@ import dan200.billund.client.render.ColourFixedMatrixApplyingVertexBuilder;
 import dan200.billund.shared.data.Brick;
 import dan200.billund.shared.data.Stud;
 import dan200.billund.shared.item.BrickItem;
-import dan200.billund.shared.tile.BillundTileEntity;
+import dan200.billund.shared.util.StudHelper;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockDisplayReader;
@@ -33,15 +33,15 @@ public class BrickRenderHelper {
         matrixStack.push();
 
         if (scale) {
-            float scaleValue = ((float) BillundTileEntity.LAYERS_PER_BLOCK) / Math.max(2.0f, (float) Math.max(width, depth) - 0.5f);
+            float scaleValue = ((float) StudHelper.LAYERS_PER_BLOCK) / Math.max(2.0f, (float) Math.max(width, depth) - 0.5f);
             matrixStack.scale(scaleValue, scaleValue, scaleValue);
         }
 
         if (center) {
             matrixStack.translate(
-                    -0.5f * ((float) width / (float) BillundTileEntity.ROWS_PER_BLOCK),
-                    -0.5f * ((float) height / (float) BillundTileEntity.LAYERS_PER_BLOCK),
-                    -0.5f * ((float) depth / (float) BillundTileEntity.ROWS_PER_BLOCK)
+                    -0.5f * ((float) width / (float) StudHelper.ROWS_PER_BLOCK),
+                    -0.5f * ((float) height / (float) StudHelper.LAYERS_PER_BLOCK),
+                    -0.5f * ((float) depth / (float) StudHelper.ROWS_PER_BLOCK)
             );
         }
 
@@ -58,12 +58,12 @@ public class BrickRenderHelper {
     }
 
     public static void renderBrick(MatrixStack matrixStack, IVertexBuilder vertexBuilder, IBlockDisplayReader world, Brick brick) {
-        int localX = (brick.xOrigin % BillundTileEntity.ROWS_PER_BLOCK + BillundTileEntity.ROWS_PER_BLOCK) % BillundTileEntity.ROWS_PER_BLOCK;
-        int localY = (brick.yOrigin % BillundTileEntity.LAYERS_PER_BLOCK + BillundTileEntity.LAYERS_PER_BLOCK) % BillundTileEntity.LAYERS_PER_BLOCK;
-        int localZ = (brick.zOrigin % BillundTileEntity.ROWS_PER_BLOCK + BillundTileEntity.ROWS_PER_BLOCK) % BillundTileEntity.ROWS_PER_BLOCK;
-        int blockX = (brick.xOrigin - localX) / BillundTileEntity.ROWS_PER_BLOCK;
-        int blockY = (brick.yOrigin - localY) / BillundTileEntity.LAYERS_PER_BLOCK;
-        int blockZ = (brick.zOrigin - localZ) / BillundTileEntity.ROWS_PER_BLOCK;
+        int localX = (brick.xOrigin % StudHelper.ROWS_PER_BLOCK + StudHelper.ROWS_PER_BLOCK) % StudHelper.ROWS_PER_BLOCK;
+        int localY = (brick.yOrigin % StudHelper.LAYERS_PER_BLOCK + StudHelper.LAYERS_PER_BLOCK) % StudHelper.LAYERS_PER_BLOCK;
+        int localZ = (brick.zOrigin % StudHelper.ROWS_PER_BLOCK + StudHelper.ROWS_PER_BLOCK) % StudHelper.ROWS_PER_BLOCK;
+        int blockX = (brick.xOrigin - localX) / StudHelper.ROWS_PER_BLOCK;
+        int blockY = (brick.yOrigin - localY) / StudHelper.LAYERS_PER_BLOCK;
+        int blockZ = (brick.zOrigin - localZ) / StudHelper.ROWS_PER_BLOCK;
         BlockPos blockPos = new BlockPos(blockX, blockY, blockZ);
 
         BlockState state = world.getBlockState(blockPos);
@@ -87,9 +87,9 @@ public class BrickRenderHelper {
         }
 
         float pixel = 1.0f / 96.0f;
-        float xBlockSize = (float) BillundTileEntity.STUDS_PER_ROW;
-        float yBlockSize = (float) BillundTileEntity.STUDS_PER_COLUMN;
-        float zBlockSize = (float) BillundTileEntity.STUDS_PER_ROW;
+        float xBlockSize = (float) StudHelper.STUDS_PER_ROW;
+        float yBlockSize = (float) StudHelper.STUDS_PER_COLUMN;
+        float zBlockSize = (float) StudHelper.STUDS_PER_ROW;
 
         float startX = (float) sx / xBlockSize;
         float startY = (float) sy / yBlockSize;
@@ -114,7 +114,7 @@ public class BrickRenderHelper {
             for (int snz = sz; snz < sz + depth; ++snz) {
                 boolean drawStud;
                 if (world != null) {
-                    Stud above = BillundTileEntity.getStud(world, snx, sny, snz);
+                    Stud above = StudHelper.getStud(world, snx, sny, snz);
                     drawStud = (above == null) || (above.transparent);
                 } else {
                     drawStud = true;

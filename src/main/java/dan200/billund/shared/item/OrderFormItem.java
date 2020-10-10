@@ -16,7 +16,8 @@ public class OrderFormItem extends Item {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
+        ItemStack stack = playerIn.getHeldItem(handIn);
         //TODO: Insert GUI
-        return super.onItemRightClick(worldIn, playerIn, handIn);
+        return ActionResult.resultPass(stack);
     }
 }

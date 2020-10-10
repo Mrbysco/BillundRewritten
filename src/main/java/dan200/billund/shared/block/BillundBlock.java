@@ -4,7 +4,7 @@ import dan200.billund.shared.core.BrickHelper;
 import dan200.billund.shared.data.Brick;
 import dan200.billund.shared.item.BrickItem;
 import dan200.billund.shared.tile.BillundTileEntity;
-
+import dan200.billund.shared.util.StudHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -61,13 +61,13 @@ public class BillundBlock extends ContainerBlock {
                 Brick brick = BrickItem.getExistingBrick(world, player, 1.0f);
                 if (brick != null) {
                     // Remove the brick
-                    billund.removeBrick(world, brick);
+                    StudHelper.removeBrick(world, brick);
 
                     // Spawn an item for the destroyed brick
                     if (!player.abilities.isCreativeMode) {
-                        float brickX = ((float) brick.xOrigin + (float) brick.width * 0.5f) / (float) BillundTileEntity.ROWS_PER_BLOCK;
-                        float brickY = ((float) brick.yOrigin + (float) brick.height) / (float) BillundTileEntity.LAYERS_PER_BLOCK;
-                        float brickZ = ((float) brick.zOrigin + (float) brick.depth * 0.5f) / (float) BillundTileEntity.ROWS_PER_BLOCK;
+                        float brickX = ((float) brick.xOrigin + (float) brick.width * 0.5f) / (float) StudHelper.ROWS_PER_BLOCK;
+                        float brickY = ((float) brick.yOrigin + (float) brick.height) / (float) StudHelper.LAYERS_PER_BLOCK;
+                        float brickZ = ((float) brick.zOrigin + (float) brick.depth * 0.5f) / (float) StudHelper.ROWS_PER_BLOCK;
                         ItemStack stack = BrickHelper.createBrickStack(brick.illuminated, brick.transparent, brick.smooth, brick.color, Math.min(brick.width, brick.depth), Math.max(brick.width, brick.depth), 1);
                         ItemEntity itemEntity = new ItemEntity(world, brickX, brickY + 0.05f, brickZ, stack);
                         itemEntity.setMotion(0.0F, 0.0F, 0.0F);
@@ -116,23 +116,23 @@ public class BillundBlock extends ContainerBlock {
             int sy = s_hoverBrick.yOrigin;
             int sz = s_hoverBrick.zOrigin;
             {
-                int localX = (sx % BillundTileEntity.ROWS_PER_BLOCK + BillundTileEntity.ROWS_PER_BLOCK) % BillundTileEntity.ROWS_PER_BLOCK;
-                int localY = (sy % BillundTileEntity.LAYERS_PER_BLOCK + BillundTileEntity.LAYERS_PER_BLOCK) % BillundTileEntity.LAYERS_PER_BLOCK;
-                int localZ = (sz % BillundTileEntity.ROWS_PER_BLOCK + BillundTileEntity.ROWS_PER_BLOCK) % BillundTileEntity.ROWS_PER_BLOCK;
-                int blockX = (sx - localX) / BillundTileEntity.ROWS_PER_BLOCK;
-                int blockY = (sy - localY) / BillundTileEntity.LAYERS_PER_BLOCK;
-                int blockZ = (sz - localZ) / BillundTileEntity.ROWS_PER_BLOCK;
+                int localX = (sx % StudHelper.ROWS_PER_BLOCK + StudHelper.ROWS_PER_BLOCK) % StudHelper.ROWS_PER_BLOCK;
+                int localY = (sy % StudHelper.LAYERS_PER_BLOCK + StudHelper.LAYERS_PER_BLOCK) % StudHelper.LAYERS_PER_BLOCK;
+                int localZ = (sz % StudHelper.ROWS_PER_BLOCK + StudHelper.ROWS_PER_BLOCK) % StudHelper.ROWS_PER_BLOCK;
+                int blockX = (sx - localX) / StudHelper.ROWS_PER_BLOCK;
+                int blockY = (sy - localY) / StudHelper.LAYERS_PER_BLOCK;
+                int blockZ = (sz - localZ) / StudHelper.ROWS_PER_BLOCK;
 
                 if ((pos.getX() == blockX || pos.getX() == blockX + 1) &&
                         (pos.getY() == blockY || pos.getY() == blockY + 1) &&
                         (pos.getZ() == blockZ || pos.getZ() == blockZ + 1)) {
-                    float xScale = 16.0f / (float) BillundTileEntity.ROWS_PER_BLOCK;
-                    float yScale = 16.0f / (float) BillundTileEntity.LAYERS_PER_BLOCK;
-                    float zScale = 16.0f / (float) BillundTileEntity.ROWS_PER_BLOCK;
+                    float xScale = 16.0f / (float) StudHelper.ROWS_PER_BLOCK;
+                    float yScale = 16.0f / (float) StudHelper.LAYERS_PER_BLOCK;
+                    float zScale = 16.0f / (float) StudHelper.ROWS_PER_BLOCK;
 
-                    float startX = (float) (sx - (pos.getX() * BillundTileEntity.ROWS_PER_BLOCK)) * xScale;
-                    float startY = (float) (sy - (pos.getY() * BillundTileEntity.LAYERS_PER_BLOCK)) * yScale;
-                    float startZ = (float) (sz - (pos.getZ() * BillundTileEntity.ROWS_PER_BLOCK)) * zScale;
+                    float startX = (float) (sx - (pos.getX() * StudHelper.ROWS_PER_BLOCK)) * xScale;
+                    float startY = (float) (sy - (pos.getY() * StudHelper.LAYERS_PER_BLOCK)) * yScale;
+                    float startZ = (float) (sz - (pos.getZ() * StudHelper.ROWS_PER_BLOCK)) * zScale;
                     VoxelShape shape = Block.makeCuboidShape(startX, startY, startZ,
                             startX + (float) s_hoverBrick.width * xScale,
                             startY + (float) s_hoverBrick.height * yScale,
