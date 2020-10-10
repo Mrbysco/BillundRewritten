@@ -1,6 +1,9 @@
 package dan200.billund.shared.item;
 
-import dan200.billund.shared.core.BillundTabs;
+import dan200.billund.client.gui.OrderFormScreen;
+import dan200.billund.shared.registry.BillundSetRegistry;
+import dan200.billund.shared.registry.BillundTabs;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,7 +20,9 @@ public class OrderFormItem extends Item {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
         ItemStack stack = playerIn.getHeldItem(handIn);
-        //TODO: Insert GUI
+        if(worldIn.isRemote) {
+            Minecraft.getInstance().displayGuiScreen(new OrderFormScreen(playerIn, BillundSetRegistry.instance().getAllSets()));
+        }
         return ActionResult.resultPass(stack);
     }
 }

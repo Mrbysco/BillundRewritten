@@ -6,9 +6,9 @@
     "billund.brick.transparent": "Transparent",
     "billund.brick.smooth": "Smooth",
 
-    "billund.gui.header": "Billund Order Form",
-    "billund.gui.order.place": "Place Order",
-    "billund.gui.order.placed": "Placed",
+    "billund.gui.orderForm.title": "Billund Order Form",
+    "billund.gui.orderForm.place": "Place Order",
+    "billund.gui.orderForm.placed": "Placed",
 
     "_comment": "Pack",
     "billund.pack.starter": "Starter Pack",

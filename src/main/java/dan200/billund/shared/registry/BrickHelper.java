@@ -1,4 +1,4 @@
-package dan200.billund.shared.core;
+package dan200.billund.shared.registry;
 
 import dan200.billund.shared.item.BrickItem;
 import net.minecraft.item.DyeColor;

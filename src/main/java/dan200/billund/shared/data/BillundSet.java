@@ -6,139 +6,60 @@
 
 package dan200.billund.shared.data;
 
-import dan200.billund.shared.core.BrickHelper;
+import dan200.billund.shared.registry.BrickHelper;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class BillundSet {
+    private final String setName;
+    private final String setLocal;
+    private int cost;
+    private ArrayList<ItemStack> brickList;
 
-    public static BillundSet get(int index) {
-        return new BillundSet(index);
+    public BillundSet(String name, String local, int cost, ArrayList<ItemStack> bricks) {
+        this.setName = name;
+        this.setLocal = local;
+        this.cost = cost;
+        this.brickList = bricks;
     }
 
-    private static String[] s_setNames = new String[]{
-            "pack.starter",
-            "pack.colorA",
-            "pack.colorB",
-            "pack.colorC",
-            "pack.colorD",
-            "pack.random",
-    };
+    public BillundSet(String name, String local, int cost) {
+        this.setName = name;
+        this.setLocal = local;
+        this.cost = cost;
+        this.brickList = new ArrayList<>();
+    }
 
-    private static int[] s_setCosts = new int[]{
-            7,
-            10,
-            10,
-            10,
-            10,
-            15
-    };
+    public String getSetName() {
+        return setName;
+    }
 
-    private int m_index;
-
-    public BillundSet(int index) {
-        m_index = index;
+    public String getSetLocal() {
+        return setLocal;
     }
 
     public int getCost() {
-        return s_setCosts[m_index];
+        return cost;
     }
 
-    public String getDescription() {
-        return s_setNames[m_index];
-    }
-
-    private IInventory s_addInventory = null;
-    private int s_addIndex = 0;
-
-    public void populateChest(IInventory inv) {
-        s_addIndex = 0;
-        s_addInventory = inv;
-
-        switch (m_index) {
-            case 0: {
-                // Starter set
-                // Basic pieces in 6 colours
-                addBasic(DyeColor.RED);
-                addBasic(DyeColor.GREEN);
-                addBasic(DyeColor.BLUE);
-                addBasic(DyeColor.YELLOW);
-                addBasic(DyeColor.WHITE);
-                addBasic(DyeColor.BLACK);
-                break;
-            }
-            case 1: {
-                // color Pack
-                // pieces in 3 colours
-                addAll(DyeColor.RED);
-                addAll(DyeColor.GREEN);
-                addAll(DyeColor.BLUE);
-                break;
-            }
-            case 2: {
-                // color Pack
-                // pieces in 3 colours
-                addAll(DyeColor.ORANGE);
-                addAll(DyeColor.YELLOW);
-                addAll(DyeColor.LIME);
-                break;
-            }
-            case 3: {
-                // color Pack
-                // pieces in 3 colours
-                addAll(DyeColor.PINK);
-                addAll(DyeColor.PURPLE);
-                addAll(DyeColor.WHITE);
-                break;
-            }
-            case 4: {
-                // color Pack
-                // pieces in 3 colours
-                addAll(DyeColor.LIGHT_GRAY);
-                addAll(DyeColor.GRAY);
-                addAll(DyeColor.BLACK);
-                break;
-            }
-            case 5: {
-                for (int i=0; i<27; i++) {
-                    addRandom();
-                }
-            }
+    public ArrayList<ItemStack> getBrickList() {
+        if(getSetName().equalsIgnoreCase("BlindBag")) {
+            ArrayList bricks = new ArrayList();
+            addRandom(bricks);
+            return bricks;
+        } else {
+            return brickList;
         }
     }
 
-    private void add(ItemStack stack) {
-        int slot = s_addIndex++;
-        if (slot < s_addInventory.getSizeInventory()) {
-            s_addInventory.setInventorySlotContents(slot, stack);
-        }
-    }
-
-    private void addBasic(DyeColor color) {
-        add(BrickHelper.createBrickStack(color, 1, 2, 24));
-        add(BrickHelper.createBrickStack(color, 1, 4, 24));
-        add(BrickHelper.createBrickStack(color, 2, 2, 24));
-        add(BrickHelper.createBrickStack(color, 2, 4, 24));
-    }
-
-    private void addAll(DyeColor color) {
-        add(BrickHelper.createBrickStack(color, 1, 1, 24));
-        add(BrickHelper.createBrickStack(color, 1, 2, 24));
-        add(BrickHelper.createBrickStack(color, 1, 3, 24));
-        add(BrickHelper.createBrickStack(color, 1, 4, 24));
-        add(BrickHelper.createBrickStack(color, 1, 6, 24));
-        add(BrickHelper.createBrickStack(color, 2, 2, 24));
-        add(BrickHelper.createBrickStack(color, 2, 3, 24));
-        add(BrickHelper.createBrickStack(color, 2, 4, 24));
-        add(BrickHelper.createBrickStack(color, 2, 6, 24));
-    }
-
-    private void addRandom() {
+    private void addRandom(ArrayList<ItemStack> bricks) {
         Random random = new Random();
-        add(BrickHelper.createBrickStack(
+        bricks.add(BrickHelper.createBrickStack(
                 random.nextBoolean(),
                 random.nextBoolean(),
                 random.nextBoolean(),
@@ -147,5 +68,25 @@ public class BillundSet {
                 random.nextInt(6) + 1,
                 24
         ));
+    }
+
+    public void populateChest(IInventory inv) {
+        ArrayList<ItemStack> bricks = getBrickList();
+        for(int i = 0; i < bricks.size(); i++) {
+            if(i > inv.getSizeInventory()) break;
+
+            ItemStack stack = bricks.get(i);
+            if(!stack.isEmpty()) {
+                inv.setInventorySlotContents(i, stack);
+            }
+        }
+    }
+
+    public void addBricks(DyeColor color, int width, int depth, int quantity) {
+        this.brickList.add(BrickHelper.createBrickStack(color, width, depth, quantity));
+    }
+
+    public void addBricks(List<ItemStack> stackList) {
+        this.brickList.addAll(stackList);
     }
 }

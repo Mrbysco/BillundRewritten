@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.vector.Vector3f;
 import org.lwjgl.opengl.GL11;
 
 import static net.minecraft.client.renderer.RenderState.LIGHTMAP_ENABLED;
@@ -30,6 +31,8 @@ public class ItemBrickRenderer extends ItemStackTileEntityRenderer {
 
     @Override
     public void func_239207_a_(ItemStack stack, TransformType type, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
+
+        matrixStack.push();
         switch (type) {
             case THIRD_PERSON_LEFT_HAND:
             case THIRD_PERSON_RIGHT_HAND:{
@@ -37,17 +40,15 @@ public class ItemBrickRenderer extends ItemStackTileEntityRenderer {
                 break;
             }
             case HEAD: {
-                matrixStack.push();
                 matrixStack.translate(0.6f, 0.6f, 0.6f);
                 BrickRenderHelper.renderBrick(stack, matrixStack, buffer.getBuffer(renderType), false, true);
-                matrixStack.pop();
                 break;
             }
             case GUI: {
-                matrixStack.push();
-                matrixStack.translate(0.5f, 0.5f, 0.5f);
+                matrixStack.rotate(Vector3f.XP.rotationDegrees(30));
+                matrixStack.rotate(Vector3f.YP.rotationDegrees(225));
+                matrixStack.scale(0.625f, 0.625f, 0.625f);
                 BrickRenderHelper.renderBrick(stack, matrixStack, buffer.getBuffer(renderType), true, true);
-                matrixStack.pop();
                 break;
             }
             case FIRST_PERSON_LEFT_HAND:
@@ -56,5 +57,6 @@ public class ItemBrickRenderer extends ItemStackTileEntityRenderer {
                 break;
             }
         }
+        matrixStack.pop();
     }
 }

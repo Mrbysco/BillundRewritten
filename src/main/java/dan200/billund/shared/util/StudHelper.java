@@ -1,6 +1,6 @@
 package dan200.billund.shared.util;
 
-import dan200.billund.shared.core.BillundRegistry;
+import dan200.billund.shared.registry.BillundRegistry;
 import dan200.billund.shared.data.Brick;
 import dan200.billund.shared.data.Stud;
 import dan200.billund.shared.tile.BillundTileEntity;

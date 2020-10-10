@@ -1,4 +1,4 @@
-package dan200.billund.shared.core;
+package dan200.billund.shared.registry;
 
 import dan200.billund.Billund;
 import dan200.billund.shared.block.BillundBlock;
