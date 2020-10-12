@@ -1,6 +1,8 @@
 package dan200.billund.shared.block;
 
+import dan200.billund.Billund;
 import dan200.billund.shared.data.Brick;
+import dan200.billund.shared.data.Stud;
 import dan200.billund.shared.item.BrickItem;
 import dan200.billund.shared.registry.BrickHelper;
 import dan200.billund.shared.tile.BillundTileEntity;
@@ -110,40 +112,8 @@ public class BillundBlock extends ContainerBlock {
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        if (s_hoverBrick != null) {
-            // See if the hovered brick is in the start bit
-            int sx = s_hoverBrick.xOrigin;
-            int sy = s_hoverBrick.yOrigin;
-            int sz = s_hoverBrick.zOrigin;
-            {
-                int localX = (sx % StudHelper.ROWS_PER_BLOCK + StudHelper.ROWS_PER_BLOCK) % StudHelper.ROWS_PER_BLOCK;
-                int localY = (sy % StudHelper.LAYERS_PER_BLOCK + StudHelper.LAYERS_PER_BLOCK) % StudHelper.LAYERS_PER_BLOCK;
-                int localZ = (sz % StudHelper.ROWS_PER_BLOCK + StudHelper.ROWS_PER_BLOCK) % StudHelper.ROWS_PER_BLOCK;
-                int blockX = (sx - localX) / StudHelper.ROWS_PER_BLOCK;
-                int blockY = (sy - localY) / StudHelper.LAYERS_PER_BLOCK;
-                int blockZ = (sz - localZ) / StudHelper.ROWS_PER_BLOCK;
-
-                if ((pos.getX() == blockX || pos.getX() == blockX + 1) &&
-                        (pos.getY() == blockY || pos.getY() == blockY + 1) &&
-                        (pos.getZ() == blockZ || pos.getZ() == blockZ + 1)) {
-                    float xScale = 16.0f / (float) StudHelper.ROWS_PER_BLOCK;
-                    float yScale = 16.0f / (float) StudHelper.LAYERS_PER_BLOCK;
-                    float zScale = 16.0f / (float) StudHelper.ROWS_PER_BLOCK;
-
-                    float startX = (float) (sx - (pos.getX() * StudHelper.ROWS_PER_BLOCK)) * xScale;
-                    float startY = (float) (sy - (pos.getY() * StudHelper.LAYERS_PER_BLOCK)) * yScale;
-                    float startZ = (float) (sz - (pos.getZ() * StudHelper.ROWS_PER_BLOCK)) * zScale;
-                    VoxelShape shape = Block.makeCuboidShape(startX, startY, startZ,
-                            startX + (float) s_hoverBrick.width * xScale,
-                            startY + (float) s_hoverBrick.height * yScale,
-                            startZ + (float) s_hoverBrick.depth * zScale).simplify();
-                    return shape;
-                }
-            }
-        }
-
         // Set bounds to something that should hopefully never be hit
-        return Block.makeCuboidShape(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        return Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 0.0D, 0.0D, 0.0D);
     }
 
     @Override

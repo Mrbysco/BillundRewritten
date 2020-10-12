@@ -31,7 +31,6 @@ public class ItemBrickRenderer extends ItemStackTileEntityRenderer {
 
     @Override
     public void func_239207_a_(ItemStack stack, TransformType type, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
-
         matrixStack.push();
 
         switch (type) {

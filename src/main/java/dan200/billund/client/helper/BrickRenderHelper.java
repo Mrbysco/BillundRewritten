@@ -1,6 +1,7 @@
 package dan200.billund.client.helper;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultColorVertexBuilder;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import dan200.billund.client.render.ColourFixedMatrixApplyingVertexBuilder;
@@ -10,6 +11,7 @@ import dan200.billund.shared.item.BrickItem;
 import dan200.billund.shared.util.StudHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockDisplayReader;
@@ -19,6 +21,14 @@ import net.minecraft.world.IBlockReader;
  * @author dmillerw
  */
 public class BrickRenderHelper {
+
+    public static void translateToWorldCoords(Entity entity, float frame) {
+        double interpPosX = entity.lastTickPosX + (entity.getPosX() - entity.lastTickPosX) * frame;
+        double interpPosY = entity.lastTickPosY + (entity.getPosY() - entity.lastTickPosY) * frame;
+        double interpPosZ = entity.lastTickPosZ + (entity.getPosZ() - entity.lastTickPosZ) * frame;
+        RenderSystem.translatef((float)-interpPosX, (float)-interpPosY, (float)-interpPosZ);
+    }
+
     public static void renderBrick(ItemStack brick, MatrixStack matrixStack, IVertexBuilder vertexBuilder, boolean scale, boolean center) {
         int brightness = 15;
 

@@ -5,6 +5,7 @@ import dan200.billund.shared.block.BillundBlock;
 import dan200.billund.shared.entity.AirDropEntity;
 import dan200.billund.shared.item.BrickItem;
 import dan200.billund.shared.item.OrderFormItem;
+import dan200.billund.shared.tile.BillundTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -171,6 +172,7 @@ public class BillundRegistry {
     public static final RegistryObject<Item> ORDER_FORM = ITEMS.register("order_form" , () -> new OrderFormItem(new Item.Properties()));
 
     public static final RegistryObject<Block> BILLUND = BLOCKS.register("billund", () -> new BillundBlock(Block.Properties.create(Material.WOOD)));
+    public static final RegistryObject<TileEntityType<BillundTileEntity>> BILLUND_TILE = TILES.register("billund_tile", () -> TileEntityType.Builder.create(BillundTileEntity::new, BillundRegistry.BILLUND.get()).build(null));
 
     public static final RegistryObject<EntityType<AirDropEntity>> AIR_DROP = ENTITIES.register("air_drop", () -> register("air_drop", EntityType.Builder.<AirDropEntity>create(AirDropEntity::new, EntityClassification.MISC).size(0.98f, 0.98f)));
 

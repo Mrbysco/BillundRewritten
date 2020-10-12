@@ -7,7 +7,6 @@
 package dan200.billund.shared.data;
 
 public class Stud {
-
     public boolean illuminated;
     public boolean transparent;
     public boolean smooth;

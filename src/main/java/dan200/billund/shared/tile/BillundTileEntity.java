@@ -1,6 +1,7 @@
 package dan200.billund.shared.tile;
 
 import dan200.billund.shared.data.Stud;
+import dan200.billund.shared.registry.BillundRegistry;
 import dan200.billund.shared.util.StudHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
@@ -24,7 +25,7 @@ public class BillundTileEntity extends TileEntity {
     }
 
     public BillundTileEntity() {
-        this(null); //TODO: Insert the Type
+        this(BillundRegistry.BILLUND_TILE.get());
     }
 
     public Stud getStudLocal(int x, int y, int z) {

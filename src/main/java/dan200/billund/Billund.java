@@ -1,6 +1,8 @@
 package dan200.billund;
 
 import dan200.billund.client.ClientProxy;
+import dan200.billund.client.handler.ClientTickHandler;
+import dan200.billund.client.handler.RenderEventHandler;
 import dan200.billund.shared.network.PacketHandler;
 import dan200.billund.shared.registry.BillundRegistry;
 import dan200.billund.shared.registry.BillundSetRegistry;
@@ -35,6 +37,8 @@ public class Billund {
 
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             eventBus.addListener(ClientProxy::registerRenders);
+            MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
+            MinecraftForge.EVENT_BUS.register(new RenderEventHandler());
         });
     }
 
