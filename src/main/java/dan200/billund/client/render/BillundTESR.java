@@ -26,8 +26,8 @@ public class BillundTESR extends TileEntityRenderer<BillundTileEntity> {
         IVertexBuilder vertexBuilder = bufferIn.getBuffer(renderType);
 
         matrixStackIn.push();
-        matrixStackIn.translate(-1, -1, -1);
         final BlockPos pos = tileEntityIn.getPos();
+        matrixStackIn.translate(-pos.getX(), -pos.getY(), -pos.getZ());
         final World world = tileEntityIn.getWorld();
         for (int x = 0; x < StudHelper.STUDS_PER_ROW; ++x) {
             for (int y = 0; y < StudHelper.STUDS_PER_COLUMN; ++y) {

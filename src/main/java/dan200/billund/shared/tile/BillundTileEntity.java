@@ -38,7 +38,6 @@ public class BillundTileEntity extends TileEntity {
     }
 
     public void setStudLocal(int x, int y, int z, Stud stud) {
-        System.out.println(String.format("Trying to set stud to %s, %s, %s", x, y, z));
         if (x >= 0 && x < StudHelper.STUDS_PER_ROW &&
                 y >= 0 && y < StudHelper.STUDS_PER_COLUMN &&
                 z >= 0 && z < StudHelper.STUDS_PER_ROW) {
@@ -114,7 +113,6 @@ public class BillundTileEntity extends TileEntity {
         for (int i = 0; i < StudHelper.STUDS_PER_BLOCK; ++i) {
             Stud stud = m_studs[i];
             if (stud != null) {
-                System.out.println(i);
                 CompoundNBT studTag = new CompoundNBT();
                 studTag.putBoolean("i", stud.illuminated);
                 studTag.putBoolean("t", stud.transparent);
@@ -154,7 +152,6 @@ public class BillundTileEntity extends TileEntity {
                 stud.brickHeight = studTag.getInt("h");
                 stud.brickDepth = studTag.getInt("d");
                 m_studs[i] = stud;
-                System.out.println("hey");
             } else {
                 m_studs[i] = null;
             }

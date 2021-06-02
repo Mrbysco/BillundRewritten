@@ -14,6 +14,8 @@ public class BillundRenderType extends RenderType {
 		RenderType.State renderTypeState = RenderType.State.getBuilder()
 				.shadeModel(SHADE_ENABLED)
 				.lightmap(LIGHTMAP_ENABLED)
+				.transparency(TRANSLUCENT_TRANSPARENCY)
+				.target(TRANSLUCENT_TARGET)
 				.build(false);
 		return RenderType.makeType("billund", DefaultVertexFormats.POSITION_COLOR_LIGHTMAP, GL11.GL_QUADS, 2097152, true, false, renderTypeState);
 	}

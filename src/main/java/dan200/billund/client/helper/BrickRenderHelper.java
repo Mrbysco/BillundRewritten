@@ -9,6 +9,7 @@ import dan200.billund.shared.util.StudHelper;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.world.IBlockDisplayReader;
 import net.minecraft.world.IBlockReader;
@@ -25,6 +26,7 @@ public class BrickRenderHelper {
         int width = item.getWidth();
         int height = BrickItem.getHeight(brick);
         boolean illuminated = BrickItem.getIlluminated(brick);
+        boolean transparent = BrickItem.getTransparent(brick);
         int depth = item.getDepth();
 
         // Setup
@@ -43,8 +45,9 @@ public class BrickRenderHelper {
             );
         }
 
-        Matrix4f matrix4f = matrixStack.getLast().getMatrix();
-        renderBrick(vertexBuilder, matrix4f, null, color, 0.65F, combinedLight, illuminated, smooth, 0, 0, 0, width, height, depth);
+        Matrix4f currentTransformMatrix = matrixStack.getLast().getMatrix();
+        Matrix3f normalMatrix = matrixStack.getLast().getNormal();
+        renderBrick(vertexBuilder, currentTransformMatrix, normalMatrix, null, color, transparent ? 0.65F : 1.0F, combinedLight, illuminated, smooth, 0, 0, 0, width, height, depth);
 
         matrixStack.pop();
     }
@@ -67,13 +70,14 @@ public class BrickRenderHelper {
             brightness = 15728880;
         }
 
-        Matrix4f matrix4f = matrixStack.getLast().getMatrix();
+        Matrix4f currentTransformMatrix = matrixStack.getLast().getMatrix();
+        Matrix3f normalMatrix = matrixStack.getLast().getNormal();
 
-        renderBrick(vertexBuilder, matrix4f, world, brick.color, 0.65F, brightness, brick.illuminated, brick.smooth, brick.xOrigin, brick.yOrigin, brick.zOrigin, brick.width, brick.height,
+        renderBrick(vertexBuilder, currentTransformMatrix, normalMatrix, world, brick.color, brick.transparent ? 0.65F : 1.0F, brightness, brick.illuminated, brick.smooth, brick.xOrigin, brick.yOrigin, brick.zOrigin, brick.width, brick.height,
                 brick.depth);
     }
 
-    public static void renderBrick(IVertexBuilder vertexBuilder, Matrix4f matrix4f, IBlockReader world, int color, float alpha, int brightness, boolean illuminated, boolean smooth, int sx, int sy, int sz, int width,
+    public static void renderBrick(IVertexBuilder vertexBuilder, Matrix4f transformMatrix, Matrix3f normalMatrix, IBlockReader world, int color, float alpha, int brightness, boolean illuminated, boolean smooth, int sx, int sy, int sz, int width,
                                    int height, int depth) {
         // Draw the brick
         if (world != null && !illuminated) {
@@ -92,7 +96,7 @@ public class BrickRenderHelper {
         float endY = startY + ((float) height / yBlockSize);
         float endZ = startZ + ((float) depth / zBlockSize);
         renderBox(
-                vertexBuilder, matrix4f, color, alpha,
+                vertexBuilder, transformMatrix, normalMatrix, color, alpha,
                 startX, startY, startZ,
                 endX, endY, endZ,
                 true, brightness
@@ -122,19 +126,19 @@ public class BrickRenderHelper {
                     startZ = (float) snz / zBlockSize;
                     endZ = startZ + (1.0f / zBlockSize);
                     renderBox(
-                            vertexBuilder, matrix4f, color, alpha,
+                            vertexBuilder, transformMatrix, normalMatrix, color, alpha,
                             startX + pixel * 2.0f, startY, startZ + pixel * 4.0f,
                             startX + pixel * 4.0f, endY, endZ - pixel * 4.0f,
                             false, brightness
                     );
                     renderBox(
-                            vertexBuilder, matrix4f, color, alpha,
+                            vertexBuilder, transformMatrix, normalMatrix, color, alpha,
                             startX + pixel * 4.0f, startY, startZ + pixel * 2.0f,
                             endX - pixel * 4.0f, endY, endZ - pixel * 2.0f,
                             false, brightness
                     );
                     renderBox(
-                            vertexBuilder, matrix4f, color, alpha,
+                            vertexBuilder, transformMatrix, normalMatrix, color, alpha,
                             endX - pixel * 4.0f, startY, startZ + pixel * 4.0f,
                             endX - pixel * 2.0f, endY, endZ - pixel * 4.0f,
                             false, brightness
@@ -144,79 +148,80 @@ public class BrickRenderHelper {
         }
     }
 
-    private static void renderBox(IVertexBuilder vertexBuilder, Matrix4f matrix4f, int color, float alpha, float startX, float startY, float startZ, float endX, float endY, float endZ, boolean bottom, int combinedLightIn) {
+    private static void renderBox(IVertexBuilder vertexBuilder, Matrix4f transformMatrix, Matrix3f normalMatrix, int color, float alpha, float startX, float startY, float startZ, float endX, float endY, float endZ, boolean bottom, int combinedLightIn) {
         // X faces
-        renderFaceXNeg(vertexBuilder, matrix4f, color, alpha, startX, startY, startZ, endX, endY, endZ, combinedLightIn);
-        renderFaceXPos(vertexBuilder, matrix4f, color, alpha, startX, startY, startZ, endX, endY, endZ, combinedLightIn);
+        renderFaceXNeg(vertexBuilder, transformMatrix, normalMatrix, color, alpha, startX, startY, startZ, endX, endY, endZ, combinedLightIn);
+        renderFaceXPos(vertexBuilder, transformMatrix, normalMatrix, color, alpha, startX, startY, startZ, endX, endY, endZ, combinedLightIn);
 
         // Y faces
         if (bottom) {
-            renderFaceYNeg(vertexBuilder, matrix4f, color, alpha, startX, startY, startZ, endX, endY, endZ, combinedLightIn);
+            renderFaceYNeg(vertexBuilder, transformMatrix, normalMatrix, color, alpha, startX, startY, startZ, endX, endY, endZ, combinedLightIn);
         }
-        renderFaceYPos(vertexBuilder, matrix4f, color, alpha, startX, startY, startZ, endX, endY, endZ, combinedLightIn);
+        renderFaceYPos(vertexBuilder, transformMatrix, normalMatrix, color, alpha, startX, startY, startZ, endX, endY, endZ, combinedLightIn);
 
         // Z faces
-        renderFaceZNeg(vertexBuilder, matrix4f, color, alpha, startX, startY, startZ, endX, endY, endZ, combinedLightIn);
-        renderFaceZPos(vertexBuilder, matrix4f, color, alpha, startX, startY, startZ, endX, endY, endZ, combinedLightIn);
+        renderFaceZNeg(vertexBuilder, transformMatrix, normalMatrix, color, alpha, startX, startY, startZ, endX, endY, endZ, combinedLightIn);
+        renderFaceZPos(vertexBuilder, transformMatrix, normalMatrix, color, alpha, startX, startY, startZ, endX, endY, endZ, combinedLightIn);
     }
 
-    private static void renderFaceXNeg(IVertexBuilder bufferBuilder, Matrix4f matrix4f, int color, float alpha, float startX, float startY, float startZ, float endX, float endY, float endZ, int combinedLight) {
+    private static void renderFaceXNeg(IVertexBuilder bufferBuilder, Matrix4f transformMatrix, Matrix3f normalMatrix, int color, float alpha, float startX, float startY, float startZ, float endX, float endY, float endZ, int combinedLight) {
         final float r = (float)(color >> 16 & 255) / 255.0F;
         final float g = (float)(color >> 8 & 255) / 255.0F;
         final float b = (float)(color & 255) / 255.0F;
-        bufferBuilder.pos(matrix4f, startX, endY, endZ).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
-        bufferBuilder.pos(matrix4f, startX, endY, startZ).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
-        bufferBuilder.pos(matrix4f, startX, startY, startZ).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
-        bufferBuilder.pos(matrix4f, startX, startY, endZ).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
+
+        bufferBuilder.pos(transformMatrix, startX, endY, endZ).normal(normalMatrix, 0.0f, -1.0f, 0.0f).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
+        bufferBuilder.pos(transformMatrix, startX, endY, startZ).normal(normalMatrix, 0.0f, -1.0f, 0.0f).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
+        bufferBuilder.pos(transformMatrix, startX, startY, startZ).normal(normalMatrix, 0.0f, -1.0f, 0.0f).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
+        bufferBuilder.pos(transformMatrix, startX, startY, endZ).normal(normalMatrix, 0.0f, -1.0f, 0.0f).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
     }
 
-    private static void renderFaceXPos(IVertexBuilder bufferBuilder, Matrix4f matrix4f, int color, float alpha, float startX, float startY, float startZ, float endX, float endY, float endZ, int combinedLight) {
+    private static void renderFaceXPos(IVertexBuilder bufferBuilder, Matrix4f transformMatrix, Matrix3f normalMatrix, int color, float alpha, float startX, float startY, float startZ, float endX, float endY, float endZ, int combinedLight) {
         final float r = (float)(color >> 16 & 255) / 255.0F;
         final float g = (float)(color >> 8 & 255) / 255.0F;
         final float b = (float)(color & 255) / 255.0F;
-        bufferBuilder.pos(matrix4f, endX, startY, endZ).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
-        bufferBuilder.pos(matrix4f, endX, startY, startZ).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
-        bufferBuilder.pos(matrix4f, endX, endY, startZ).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
-        bufferBuilder.pos(matrix4f, endX, endY, endZ).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
+        bufferBuilder.pos(transformMatrix, endX, startY, endZ).normal(normalMatrix, 0.0f, -1.0f, 0.0f).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
+        bufferBuilder.pos(transformMatrix, endX, startY, startZ).normal(normalMatrix, 0.0f, -1.0f, 0.0f).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
+        bufferBuilder.pos(transformMatrix, endX, endY, startZ).normal(normalMatrix, 0.0f, -1.0f, 0.0f).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
+        bufferBuilder.pos(transformMatrix, endX, endY, endZ).normal(normalMatrix, 0.0f, -1.0f, 0.0f).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
     }
 
-    private static void renderFaceYNeg(IVertexBuilder bufferBuilder, Matrix4f matrix4f, int color, float alpha, float startX, float startY, float startZ, float endX, float endY, float endZ, int combinedLight) {
+    private static void renderFaceYNeg(IVertexBuilder bufferBuilder, Matrix4f transformMatrix, Matrix3f normalMatrix, int color, float alpha, float startX, float startY, float startZ, float endX, float endY, float endZ, int combinedLight) {
         final float r = (float)(color >> 16 & 255) / 255.0F;
         final float g = (float)(color >> 8 & 255) / 255.0F;
         final float b = (float)(color & 255) / 255.0F;
-        bufferBuilder.pos(matrix4f, startX, startY, endZ).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
-        bufferBuilder.pos(matrix4f, startX, startY, startZ).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
-        bufferBuilder.pos(matrix4f, endX, startY, startZ).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
-        bufferBuilder.pos(matrix4f, endX, startY, endZ).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
+        bufferBuilder.pos(transformMatrix, startX, startY, endZ).normal(normalMatrix, 0.0f, -1.0f, 0.0f).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
+        bufferBuilder.pos(transformMatrix, startX, startY, startZ).normal(normalMatrix, 0.0f, -1.0f, 0.0f).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
+        bufferBuilder.pos(transformMatrix, endX, startY, startZ).normal(normalMatrix, 0.0f, -1.0f, 0.0f).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
+        bufferBuilder.pos(transformMatrix, endX, startY, endZ).normal(normalMatrix, 0.0f, -1.0f, 0.0f).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
     }
 
-    private static void renderFaceYPos(IVertexBuilder bufferBuilder, Matrix4f matrix4f, int color, float alpha, float startX, float startY, float startZ, float endX, float endY, float endZ, int combinedLight) {
+    private static void renderFaceYPos(IVertexBuilder bufferBuilder, Matrix4f transformMatrix, Matrix3f normalMatrix, int color, float alpha, float startX, float startY, float startZ, float endX, float endY, float endZ, int combinedLight) {
         final float r = (float)(color >> 16 & 255) / 255.0F;
         final float g = (float)(color >> 8 & 255) / 255.0F;
         final float b = (float)(color & 255) / 255.0F;
-        bufferBuilder.pos(matrix4f, endX, endY, endZ).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
-        bufferBuilder.pos(matrix4f, endX, endY, startZ).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
-        bufferBuilder.pos(matrix4f, startX, endY, startZ).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
-        bufferBuilder.pos(matrix4f, startX, endY, endZ).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
+        bufferBuilder.pos(transformMatrix, endX, endY, endZ).normal(normalMatrix, 0.0f, -1.0f, 0.0f).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
+        bufferBuilder.pos(transformMatrix, endX, endY, startZ).normal(normalMatrix, 0.0f, -1.0f, 0.0f).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
+        bufferBuilder.pos(transformMatrix, startX, endY, startZ).normal(normalMatrix, 0.0f, -1.0f, 0.0f).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
+        bufferBuilder.pos(transformMatrix, startX, endY, endZ).normal(normalMatrix, 0.0f, -1.0f, 0.0f).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
     }
 
-    private static void renderFaceZNeg(IVertexBuilder bufferBuilder, Matrix4f matrix4f, int color, float alpha, float startX, float startY, float startZ, float endX, float endY, float endZ, int combinedLight) {
+    private static void renderFaceZNeg(IVertexBuilder bufferBuilder, Matrix4f transformMatrix, Matrix3f normalMatrix, int color, float alpha, float startX, float startY, float startZ, float endX, float endY, float endZ, int combinedLight) {
         final float r = (float)(color >> 16 & 255) / 255.0F;
         final float g = (float)(color >> 8 & 255) / 255.0F;
         final float b = (float)(color & 255) / 255.0F;
-        bufferBuilder.pos(matrix4f, startX, endY, startZ).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
-        bufferBuilder.pos(matrix4f, endX, endY, startZ).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
-        bufferBuilder.pos(matrix4f, endX, startY, startZ).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
-        bufferBuilder.pos(matrix4f, startX, startY, startZ).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
+        bufferBuilder.pos(transformMatrix, startX, endY, startZ).normal(normalMatrix, 0.0f, -1.0f, 0.0f).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
+        bufferBuilder.pos(transformMatrix, endX, endY, startZ).normal(normalMatrix, 0.0f, -1.0f, 0.0f).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
+        bufferBuilder.pos(transformMatrix, endX, startY, startZ).normal(normalMatrix, 0.0f, -1.0f, 0.0f).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
+        bufferBuilder.pos(transformMatrix, startX, startY, startZ).normal(normalMatrix, 0.0f, -1.0f, 0.0f).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
     }
 
-    private static void renderFaceZPos(IVertexBuilder bufferBuilder, Matrix4f matrix4f, int color, float alpha, float startX, float startY, float startZ, float endX, float endY, float endZ, int combinedLight) {
+    private static void renderFaceZPos(IVertexBuilder bufferBuilder, Matrix4f transformMatrix, Matrix3f normalMatrix, int color, float alpha, float startX, float startY, float startZ, float endX, float endY, float endZ, int combinedLight) {
         final float r = (float)(color >> 16 & 255) / 255.0F;
         final float g = (float)(color >> 8 & 255) / 255.0F;
         final float b = (float)(color & 255) / 255.0F;
-        bufferBuilder.pos(matrix4f, startX, startY, endZ).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
-        bufferBuilder.pos(matrix4f, endX, startY, endZ).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
-        bufferBuilder.pos(matrix4f, endX, endY, endZ).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
-        bufferBuilder.pos(matrix4f, startX, endY, endZ).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
+        bufferBuilder.pos(transformMatrix, startX, startY, endZ).normal(normalMatrix, 0.0f, -1.0f, 0.0f).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
+        bufferBuilder.pos(transformMatrix, endX, startY, endZ).normal(normalMatrix, 0.0f, -1.0f, 0.0f).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
+        bufferBuilder.pos(transformMatrix, endX, endY, endZ).normal(normalMatrix, 0.0f, -1.0f, 0.0f).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
+        bufferBuilder.pos(transformMatrix, startX, endY, endZ).normal(normalMatrix, 0.0f, -1.0f, 0.0f).color(r * 0.8f, g * 0.8f, b * 0.8f, alpha).lightmap(combinedLight).endVertex();
     }
 }
