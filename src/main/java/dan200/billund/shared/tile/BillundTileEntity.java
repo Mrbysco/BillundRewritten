@@ -1,7 +1,5 @@
 package dan200.billund.shared.tile;
 
-import dan200.billund.client.helper.BrickRenderHelper;
-import dan200.billund.shared.data.Brick;
 import dan200.billund.shared.data.Stud;
 import dan200.billund.shared.registry.BillundRegistry;
 import dan200.billund.shared.util.StudHelper;
@@ -9,14 +7,13 @@ import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.AxisAlignedBB;
 
 import javax.annotation.Nullable;
 
-public class BillundTileEntity extends TileEntity implements ITickableTileEntity {
+public class BillundTileEntity extends TileEntity {
 
     public boolean globalIllumination;
 
@@ -159,22 +156,8 @@ public class BillundTileEntity extends TileEntity implements ITickableTileEntity
                 m_studs[i] = stud;
                 System.out.println("hey");
             } else {
-//                m_studs[i] = null;
+                m_studs[i] = null;
             }
         }
-    }
-
-    @Override
-    public void tick() {
-//        for (int x = 0; x < StudHelper.STUDS_PER_ROW; ++x) {
-//            for (int y = 0; y < StudHelper.STUDS_PER_COLUMN; ++y) {
-//                for (int z = 0; z < StudHelper.STUDS_PER_ROW; ++z) {
-//                    Stud stud = getStudLocal(x, y, z);
-//                    if (stud != null) {
-//                        System.out.println(String.format("%s, %s, %s", x, y, z));
-//                    }
-//                }
-//            }
-//        }
     }
 }
