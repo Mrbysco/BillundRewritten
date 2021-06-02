@@ -1,7 +1,6 @@
 package dan200.billund.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import dan200.billund.Billund;
 import dan200.billund.client.render.model.ParachuteModel;
 import dan200.billund.shared.entity.AirDropEntity;
 import net.minecraft.block.Block;
@@ -11,17 +10,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
-
-import java.util.Random;
 
 public class AirDropRenderer extends EntityRenderer<AirDropEntity> {
 

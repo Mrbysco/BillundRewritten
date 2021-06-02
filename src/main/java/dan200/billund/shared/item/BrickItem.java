@@ -19,6 +19,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
@@ -55,7 +56,7 @@ public class BrickItem extends Item {
 
     public static StudHelper.StudRaycastResult raycastFromPlayer(World world, PlayerEntity player, float f) {
         // Calculate the raycast origin and direction
-        double yOffset2 = (!world.isRemote && player.isSneaking()) ? -0.08 : 0.0; // TODO: Improve
+        double yOffset2 = (player.isSneaking()) ? -0.68 : -0.25; // TODO: Improve
         float pitch = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
         float yaw = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * f;
         double x = player.prevPosX + (player.getPosX() - player.prevPosX) * (double) f;
@@ -178,18 +179,18 @@ public class BrickItem extends Item {
 
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        tooltip.add(new StringTextComponent(getWidth() + "x" + getDepth()));
+        tooltip.add(new StringTextComponent(getWidth() + "x" + getDepth()).mergeStyle(TextFormatting.GRAY));
 
         if (getIlluminated(stack)) {
-            tooltip.add(new TranslationTextComponent(Billund.MOD_ID + ".brick.illuminated"));
+            tooltip.add(new TranslationTextComponent(Billund.MOD_ID + ".brick.illuminated").mergeStyle(TextFormatting.GRAY));
         }
 
         if (getTransparent(stack)) {
-            tooltip.add(new TranslationTextComponent(Billund.MOD_ID + ".brick.transparent"));
+            tooltip.add(new TranslationTextComponent(Billund.MOD_ID + ".brick.transparent").mergeStyle(TextFormatting.GRAY));
         }
 
         if (getSmooth(stack)) {
-            tooltip.add(new TranslationTextComponent(Billund.MOD_ID + ".brick.smooth"));
+            tooltip.add(new TranslationTextComponent(Billund.MOD_ID + ".brick.smooth").mergeStyle(TextFormatting.GRAY));
         }
         super.addInformation(stack, worldIn, tooltip, flagIn);
     }
@@ -218,14 +219,14 @@ public class BrickItem extends Item {
     }
 
     public static boolean getIlluminated(ItemStack stack) {
-        return stack.hasTag() ? stack.getTag().getBoolean("illuminated") : false;
+        return stack.hasTag() && stack.getTag().getBoolean("illuminated");
     }
 
     public static boolean getTransparent(ItemStack stack) {
-        return stack.hasTag() ? stack.getTag().getBoolean("transparent") : false;
+        return stack.hasTag() && stack.getTag().getBoolean("transparent");
     }
 
     public static boolean getSmooth(ItemStack stack) {
-        return stack.hasTag() ? stack.getTag().getBoolean("smooth") : false;
+        return stack.hasTag() && stack.getTag().getBoolean("smooth");
     }
 }

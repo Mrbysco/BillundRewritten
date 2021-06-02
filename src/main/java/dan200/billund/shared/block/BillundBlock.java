@@ -1,8 +1,6 @@
 package dan200.billund.shared.block;
 
-import dan200.billund.Billund;
 import dan200.billund.shared.data.Brick;
-import dan200.billund.shared.data.Stud;
 import dan200.billund.shared.item.BrickItem;
 import dan200.billund.shared.registry.BrickHelper;
 import dan200.billund.shared.tile.BillundTileEntity;
@@ -30,6 +28,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.awt.*;
 
 public class BillundBlock extends ContainerBlock {
     
@@ -128,21 +127,21 @@ public class BillundBlock extends ContainerBlock {
                 ItemStack held = player.getHeldItem(handIn);
 
                 if (held != null && held.getItem() instanceof DyeItem) {
-//                    DyeItem dyeItem = (DyeItem)held.getItem();
-//                    Brick newBrick = new Brick(s_hoverBrick.illuminated, s_hoverBrick.transparent, s_hoverBrick.smooth, s_hoverBrick.color, s_hoverBrick.xOrigin, s_hoverBrick.yOrigin, s_hoverBrick.zOrigin, s_hoverBrick.width, s_hoverBrick.height, s_hoverBrick.depth);
-//                    Color brickColor = new Color(newBrick.color);
-//                    Color dyeColor = new Color(dyeItem.getDyeColor());
-//                    int br = brickColor.getRed();
-//                    int bg = brickColor.getGreen();
-//                    int bb = brickColor.getBlue();
-//                    int dr = dyeColor.getRed();
-//                    int dg = dyeColor.getGreen();
-//                    int db = dyeColor.getBlue();
-//                    int ar = (br + dr) / 2;
-//                    int ag = (bg + dg) / 2;
-//                    int ab = (bb + db) / 2;
-//                    newBrick.color = new Color(ar, ag, ab).getRGB();
-//                    BillundTileEntity.addBrick(worldIn, newBrick);
+                    DyeItem dyeItem = (DyeItem)held.getItem();
+                    Brick newBrick = new Brick(s_hoverBrick.illuminated, s_hoverBrick.transparent, s_hoverBrick.smooth, s_hoverBrick.color, s_hoverBrick.xOrigin, s_hoverBrick.yOrigin, s_hoverBrick.zOrigin, s_hoverBrick.width, s_hoverBrick.height, s_hoverBrick.depth);
+                    Color brickColor = new Color(newBrick.color);
+                    Color dyeColor = new Color(dyeItem.getDyeColor().getColorValue());
+                    int br = brickColor.getRed();
+                    int bg = brickColor.getGreen();
+                    int bb = brickColor.getBlue();
+                    int dr = dyeColor.getRed();
+                    int dg = dyeColor.getGreen();
+                    int db = dyeColor.getBlue();
+                    int ar = (br + dr) / 2;
+                    int ag = (bg + dg) / 2;
+                    int ab = (bb + db) / 2;
+                    newBrick.color = new Color(ar, ag, ab).getRGB();
+                    StudHelper.addBrick(worldIn, newBrick);
                 }
             }
         }

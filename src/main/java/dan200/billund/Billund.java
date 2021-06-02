@@ -3,6 +3,7 @@ package dan200.billund;
 import dan200.billund.client.ClientProxy;
 import dan200.billund.client.handler.ClientTickHandler;
 import dan200.billund.client.handler.RenderEventHandler;
+import dan200.billund.shared.handler.EntityEventHandler;
 import dan200.billund.shared.network.PacketHandler;
 import dan200.billund.shared.registry.BillundRegistry;
 import dan200.billund.shared.registry.BillundSetRegistry;
@@ -32,6 +33,8 @@ public class Billund {
         BillundRegistry.ITEMS.register(eventBus);
         BillundRegistry.BLOCKS.register(eventBus);
         BillundRegistry.TILES.register(eventBus);
+
+        MinecraftForge.EVENT_BUS.register(new EntityEventHandler());
 
         MinecraftForge.EVENT_BUS.register(this);
 

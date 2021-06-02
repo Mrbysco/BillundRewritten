@@ -1,5 +1,7 @@
 package dan200.billund.shared.tile;
 
+import dan200.billund.client.helper.BrickRenderHelper;
+import dan200.billund.shared.data.Brick;
 import dan200.billund.shared.data.Stud;
 import dan200.billund.shared.registry.BillundRegistry;
 import dan200.billund.shared.util.StudHelper;
@@ -7,17 +9,18 @@ import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.AxisAlignedBB;
 
 import javax.annotation.Nullable;
 
-public class BillundTileEntity extends TileEntity {
+public class BillundTileEntity extends TileEntity implements ITickableTileEntity {
 
     public boolean globalIllumination;
 
-    private Stud[] m_studs;
+    private final Stud[] m_studs;
 
     public BillundTileEntity(TileEntityType<?> tileTypeIn) {
         super(tileTypeIn);
@@ -38,11 +41,13 @@ public class BillundTileEntity extends TileEntity {
     }
 
     public void setStudLocal(int x, int y, int z, Stud stud) {
+        System.out.println(String.format("Trying to set stud to %s, %s, %s", x, y, z));
         if (x >= 0 && x < StudHelper.STUDS_PER_ROW &&
                 y >= 0 && y < StudHelper.STUDS_PER_COLUMN &&
                 z >= 0 && z < StudHelper.STUDS_PER_ROW) {
             m_studs[x + (z * StudHelper.STUDS_PER_ROW) + (y * StudHelper.STUDS_PER_LAYER)] = stud;
             cullOrphans();
+            markDirty();
         }
     }
 
@@ -83,15 +88,21 @@ public class BillundTileEntity extends TileEntity {
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
-        return super.getUpdatePacket();
+        return new SUpdateTileEntityPacket(pos, 0, this.getUpdateTag());
+    }
+
+    @Override
+    public CompoundNBT getUpdateTag() {
+        return this.write(new CompoundNBT());
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        this.read(getBlockState(), pkt.getNbtCompound());
         if(world != null) {
             world.notifyBlockUpdate(getPos(), getBlockState(), getBlockState(), 3);
         }
+        CompoundNBT compoundNBT = pkt.getNbtCompound();
+        handleUpdateTag(getBlockState(), compoundNBT);
     }
 
     @Override
@@ -106,6 +117,7 @@ public class BillundTileEntity extends TileEntity {
         for (int i = 0; i < StudHelper.STUDS_PER_BLOCK; ++i) {
             Stud stud = m_studs[i];
             if (stud != null) {
+                System.out.println(i);
                 CompoundNBT studTag = new CompoundNBT();
                 studTag.putBoolean("i", stud.illuminated);
                 studTag.putBoolean("t", stud.transparent);
@@ -145,9 +157,24 @@ public class BillundTileEntity extends TileEntity {
                 stud.brickHeight = studTag.getInt("h");
                 stud.brickDepth = studTag.getInt("d");
                 m_studs[i] = stud;
+                System.out.println("hey");
             } else {
-                m_studs[i] = null;
+//                m_studs[i] = null;
             }
         }
+    }
+
+    @Override
+    public void tick() {
+//        for (int x = 0; x < StudHelper.STUDS_PER_ROW; ++x) {
+//            for (int y = 0; y < StudHelper.STUDS_PER_COLUMN; ++y) {
+//                for (int z = 0; z < StudHelper.STUDS_PER_ROW; ++z) {
+//                    Stud stud = getStudLocal(x, y, z);
+//                    if (stud != null) {
+//                        System.out.println(String.format("%s, %s, %s", x, y, z));
+//                    }
+//                }
+//            }
+//        }
     }
 }

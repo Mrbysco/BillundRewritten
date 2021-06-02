@@ -36,22 +36,21 @@ public class ItemBrickRenderer extends ItemStackTileEntityRenderer {
         switch (type) {
             case THIRD_PERSON_LEFT_HAND:
             case THIRD_PERSON_RIGHT_HAND:{
-                BrickRenderHelper.renderBrick(stack, matrixStack, buffer.getBuffer(renderType), false, true);
+                matrixStack.translate(0.5f, 0.6f, 0.5f);
+                BrickRenderHelper.renderBrick(stack, matrixStack, buffer.getBuffer(renderType), false, true, combinedLight);
                 break;
             }
             case HEAD: {
                 matrixStack.translate(0.6f, 0.6f, 0.6f);
-                BrickRenderHelper.renderBrick(stack, matrixStack, buffer.getBuffer(renderType), false, true);
+                BrickRenderHelper.renderBrick(stack, matrixStack, buffer.getBuffer(renderType), false, true, combinedLight);
                 break;
             }
             case GUI: {
-//                RenderSystem.rotatef(30F, 1.0F, 0.0F, 0.0F);
-//                RenderSystem.rotatef(225, 0.0F, 1.0F, 0.0F);
+                matrixStack.translate(0.5F, 0.5F, 0.0F);
                 matrixStack.rotate(Vector3f.XP.rotationDegrees(30));
                 matrixStack.rotate(Vector3f.YP.rotationDegrees(225));
                 matrixStack.scale(0.625f, 0.625f, 0.625f);
-//                RenderSystem.scalef(0.625f, 0.625f, 0.625f);
-                BrickRenderHelper.renderBrick(stack, matrixStack, buffer.getBuffer(renderType), true, true);
+                BrickRenderHelper.renderBrick(stack, matrixStack, buffer.getBuffer(renderType), true, true, combinedLight);
                 break;
             }
             case FIRST_PERSON_LEFT_HAND:
